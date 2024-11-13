@@ -39,8 +39,8 @@ def submit_form():
     message_body = message
 
     msg = Message(subject = subject,
-                  sender = MAIL_USERNAME,
-                  recipients = MAIL_RECIEVER) # Send to this email address
+                  sender =app.config['MAIL_USERNAME'],
+                  recipients =app.config['MAIL_RECIPIENTS']) # Send to this email address
     msg.body = f'''Good day team,\n\nThere is a new message from a client: 
     Name: {name}
     Email: {email}
