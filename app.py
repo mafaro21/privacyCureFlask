@@ -4,20 +4,11 @@ from flask_mail import Mail, Message
 
 app = Flask(__name__, template_folder='')
 
-app.config['MAIL_SERVER'] = 'smtp.office365.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'ticket-alerts@providencehumancapital.com'
-# app.config['MAIL_RECIEVER'] = 'tickets@providencehumancapital.com' 
-# app.config['MAIL_RECIEVER'] = 'thexvi51@gmail.com' 
-app.config['MAIL_PASSWORD'] = 'Y@235813455857on'
-
 mail = Mail(app)
 
-# @app.route('/')
-# def index():
-#     return send_from_directory('C:/me/PrivacyCure/', 'index.html')
+@app.route('/')
+def index():
+    return 'live'
     
 
 @app.route('/submit-form', methods=['POST'])
@@ -30,15 +21,6 @@ def submit_form():
     
     # For demonstration, let's print the data to the console
     print(f'Name: {name}, Email: {email}, Phone: {phone}, Request: {request_type}  Message: {message}')
-    
-    # app.config['MAIL_SERVER'] = 'smtp.office365.com'
-    # app.config['MAIL_PORT'] = 587
-    # app.config['MAIL_USE_TLS'] = True
-    # app.config['MAIL_USE_SSL'] = False
-    # app.config['MAIL_USERNAME'] = 'ticket-alerts@providencehumancapital.com'
-    # app.config['MAIL_RECIEVER'] = 'tickets@providencehumancapital.com' 
-    # app.config['MAIL_RECIEVER'] = 'thexvi51@gmail.com' 
-    # app.config['MAIL_PASSWORD'] = 'Y@235813455857on'
 
     # mail = Mail(app)
 
