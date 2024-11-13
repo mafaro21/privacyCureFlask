@@ -1,10 +1,21 @@
 from flask import Flask, request, render_template,  redirect, url_for, send_from_directory
 import os
 from flask_mail import Mail, Message
+from dotenv import load_dotenv
 
 app = Flask(__name__, template_folder='')
 
+load_dotenv()
+
 mail = Mail(app)
+
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True').lower() == 'true'
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'False').lower() == 'true'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_RECIEVER'] = os.getenv('MAIL_RECIEVER')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 
 @app.route('/')
 def index():
