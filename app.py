@@ -40,7 +40,8 @@ def submit_form():
 
     msg = Message(subject = subject,
                   sender =app.config['MAIL_USERNAME'],
-                  recipients =app.config['MAIL_RECIPIENTS']) # Send to this email address
+                  recipients =['dpo@privacycure.com']
+                  ) 
     msg.body = f'''Good day team,\n\nThere is a new message from a client: 
     Name: {name}
     Email: {email}
