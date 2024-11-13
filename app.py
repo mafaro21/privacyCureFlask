@@ -20,7 +20,7 @@ def submit_form():
     message = request.form.get('message')
     
     # For demonstration, let's print the data to the console
-    print(f'Name: {name}, Email: {email}, Phone: {phone}, Request: {request_type}  Message: {message}')
+    # print(f'Name: {name}, Email: {email}, Phone: {phone}, Request: {request_type}  Message: {message}')
 
     # mail = Mail(app)
 
@@ -28,8 +28,8 @@ def submit_form():
     message_body = message
 
     msg = Message(subject = subject,
-                  sender = app.config['MAIL_USERNAME'],
-                  recipients = ['dpo@privacycure.com'] ) # Send to this email address
+                  sender = MAIL_USERNAME,
+                  recipients = MAIL_RECIEVER) # Send to this email address
     msg.body = f'''Good day team,\n\nThere is a new message from a client: 
     Name: {name}
     Email: {email}
