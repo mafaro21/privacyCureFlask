@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: privacyCureFlask
+    env: python
+    plan: free  # Choose 'starter' for paid plans if needed
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn -c gunicorn_config.py app:app"
+    region: frankfurt  # Choose a region close to your users
