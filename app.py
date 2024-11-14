@@ -66,7 +66,7 @@ def send_email_route():
     request_type = request.form.get('request')
     body = request.form.get('message')
 
-    to_address = "mafaro2105@gmail.com"
+    to_address = "dpo@privacycure.com"
     subject = "new client message"
     message = f'''Good day team,\n\nThere is a new message from a client: 
      Name: {name}
@@ -79,7 +79,7 @@ def send_email_route():
     if send_email(to_address, subject, message):
         return '<div style="text-align: center; margin-top:20vh; font-size:20px;">Thank you for you submission!, We will get back to you soon <div> To go home: <a href="https://privacycure.com">click here!!</a> </div></div>'
     else:
-        return '<div style="text-align: center; margin-top:20vh; font-size:20px;">There has been an error processing your message. <div> To go home: <a href="https://privacycure.com">click here!!</a> </div></div>'
+        return '<div style="text-align: center; margin-top:20vh; font-size:20px;">Unfortunately there has been an error processing your message. <div> To go home: <a href="https://privacycure.com">click here!!</a> </div></div>'
     
 
 # @app.route('/submit-form', methods=['POST'])
