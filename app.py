@@ -1,7 +1,9 @@
-from flask import Flask, request, render_template,  redirect, url_for, send_from_directory
+from flask import Flask, request, render_template,  redirect, url_for, send_from_directory, jsonify
 import os
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
+import requests
+
 
 #new
 import smtplib
@@ -21,10 +23,11 @@ app = Flask(__name__)
 # app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 
 #new
-SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.office365.com")
+SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
 SMTP_PORT = os.getenv("SMTP_PORT", 587)
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY")
 
 mail = Mail(app)
 
@@ -37,7 +40,6 @@ def send_email(to_address, subject, message):
    
 
     try:
-        # Set up the MIME structure
         msg = MIMEMultipart()
         msg["From"] = EMAIL_USER
         msg["To"] = to_address
@@ -56,6 +58,7 @@ def send_email(to_address, subject, message):
         print(f"Failed to send email: {e}")
         return False
 
+
 @app.route("/submit-form", methods=["POST"])
 def send_email_route():
 
@@ -65,21 +68,41 @@ def send_email_route():
     phone = request.form.get('phone')
     request_type = request.form.get('request')
     body = request.form.get('message')
+    recaptcha = request.form.get('g-recaptcha-response')
 
-    to_address = "dpo@privacycure.com"
-    subject = "new client message"
-    message = f'''Good day team,\n\nThere is a new message from a client: 
-     Name: {name}
-     Email: {email}
-     Phone: {phone}
-     Request Type: {request_type}
-     \n\n{body} 
-     \n\nRegards'''
+#captcha verification with Google
+    if not recaptcha:
+        return jsonify({"success": False, "message": "reCAPTCHA response is missing!"})
 
-    if send_email(to_address, subject, message):
-        return '<div style="text-align: center; margin-top:20vh; font-size:20px;">Thank you for you submission!, We will get back to you soon <div> To go home: <a href="https://privacycure.com">click here!!</a> </div></div>'
+    # Verify reCAPTCHA with Google
+    verification_url = "https://www.google.com/recaptcha/api/siteverify"
+    data = {
+        "secret": RECAPTCHA_SECRET_KEY,
+        "response": recaptcha
+    }
+
+    response = requests.post(verification_url, data=data)
+    result = response.json()
+
+    if result.get("success"):
+        to_address = "dpo@privacycure.com"
+        subject = "new client message"
+        message = f'''Good day team,\n\nThere is a new message from a client: 
+        Name: {name}
+        Email: {email}
+        Phone: {phone}
+        Request Type: {request_type}
+        \n\n{body} 
+        \n\nRegards'''
+
+        if send_email(to_address, subject, message):
+            return '<div style="text-align: center; margin-top:20vh; font-size:20px;">Thank you for you submission!, We will get back to you soon <div> To go home: <a href="https://privacycure.com">click here!!</a> </div></div>'
+        else:
+            return '<div style="text-align: center; margin-top:20vh; font-size:20px;">Unfortunately there has been an error processing your message. <div> To go home: <a href="https://privacycure.com">click here!!</a> </div></div>'
+    
     else:
-        return '<div style="text-align: center; margin-top:20vh; font-size:20px;">Unfortunately there has been an error processing your message. <div> To go home: <a href="https://privacycure.com">click here!!</a> </div></div>'
+        return "Suspicious Activity Detected"
+
     
 
 # @app.route('/submit-form', methods=['POST'])
