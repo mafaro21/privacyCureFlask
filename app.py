@@ -3,7 +3,7 @@ import os
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 import requests
-
+import re
 
 #new
 import smtplib
@@ -59,6 +59,14 @@ def send_email(to_address, subject, message):
         return False
 
 
+spam_words = ["Robertimpep"]
+
+
+def blocked_words(input):
+    pattern = r"\b(" + "|".join(spam_words) + r")\b"
+    return bool(re.search(pattern, input, re.IGNORECASE))
+
+
 @app.route("/submit-form", methods=["POST"])
 def send_email_route():
 
@@ -69,6 +77,10 @@ def send_email_route():
     request_type = request.form.get('request')
     body = request.form.get('message')
     recaptcha = request.form.get('g-recaptcha-response')
+
+    if blocked_words(name) or blocked_words(email) or blocked_words(phone) or blocked_words(body):
+        return '<div style="text-align: center; margin-top:20vh; font-size:20px;">We appreciate your submission! <div> To go home: <a href="https://privacycure.com">click here!!</a> </div></div>'
+        
 
 #captcha verification with Google
     if not recaptcha:
