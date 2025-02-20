@@ -59,12 +59,15 @@ def send_email(to_address, subject, message):
         return False
 
 
-spam_words = ["Robertimpep"]
+spam_words = ["Robertimpep", "impep", "pep"]
 
 
 def blocked_words(input):
-    pattern = r"\b(" + "|".join(spam_words) + r")\b"
+    pattern = "(" + "|".join(spam_words) + ")"
     return bool(re.search(pattern, input, re.IGNORECASE))
+
+def starts_with_8(number):
+    return bool(re.match(r"^8\d*", str(number)))
 
 
 @app.route("/submit-form", methods=["POST"])
@@ -81,6 +84,8 @@ def send_email_route():
     if blocked_words(name) or blocked_words(email) or blocked_words(phone) or blocked_words(body):
         return '<div style="text-align: center; margin-top:20vh; font-size:20px;">We appreciate your submission! <div> To go home: <a href="https://privacycure.com">click here!!</a> </div></div>'
         
+    if starts_with_8(phone):
+        return '<div style="text-align: center; margin-top:20vh; font-size:20px;">We appreciate your submission! <div> To go home: <a href="https://privacycure.com">click here!!</a> </div></div>'
 
 #captcha verification with Google
     if not recaptcha:
@@ -115,43 +120,6 @@ def send_email_route():
     else:
         return "Suspicious Activity Detected"
 
-    
-
-# @app.route('/submit-form', methods=['POST'])
-# def submit_form():
-    
-#     name = request.form.get('name')
-#     email = request.form.get('email')
-#     phone = request.form.get('phone')
-#     request_type = request.form.get('request')
-#     message = request.form.get('message')
-
-#     subject = 'New client message'
-#     message_body = message
-
-#     msg = Message(subject = subject,
-#                   sender = app.config['MAIL_USERNAME'],
-#                 #   recipients = ['dpo@privacycure.com']
-#                   recipients = ['dpo@privacycure.com']
-#                   ) 
-#     msg.body = f'''Good day team,\n\nThere is a new message from a client: 
-#     Name: {name}
-#     Email: {email}
-#     Phone: {phone}
-#     Request: {request_type}
-#     \n\n{message_body} 
-#     \n\nRegards'''
-
-
-#     # print( app.config['MAIL_USERNAME'] )
-
-#     try:
-#         # mail.connect()
-#         mail.send(msg)
-#         return '<div style="text-align: center; margin-top:20vh; font-size:20px;">Thank you for you submission!, We will get back to you soon <div> To go home: <a href="https://privacycure.com">click here!!</a> </div></div>'
-#         # return 'Email sent successfully!'
-#     except Exception as e:
-#         return f'Failed to send email: {e}'
 
 if __name__ == '__main__':
     app.run(debug=True)
